@@ -1,0 +1,69 @@
+API de Ordenamiento
+
+HttpGet]
+[Route("productos")]
+public IActionResult ObtenerProductos()
+{
+    List<Producto> productos = _almacenService.ObtenerProductos();
+
+    return Ok(productos);
+}
+
+[HttpPost]
+[Route("lotes")]
+public IActionResult CrearLote([FromBody] Lote lote)
+{
+    bool creado = _almacenService.CrearLote(lote);
+    if (creado)
+    {
+        return Ok("Lote creado exitosamente.");
+    }
+    else
+    {
+        return BadRequest("Error al crear el lote.");
+    }
+}
+
+[HttpPost]
+[Route("camiones/{id_camion}/lotes")]
+public IActionResult AsignarLoteACamion(int id_camion, [FromBody] int id_lote)
+{
+    bool asignado = _almacenService.AsignarLoteACamion(id_camion, id_lote);
+
+    if (asignado)
+    {
+        return Ok("Lote asignado al camión exitosamente.");
+    }
+    else
+    {
+        return BadRequest("Error al asignar el lote al camión.");
+    }
+}
+
+API de tránsito
+[HttpGet]
+[Route("camiones/{id_camion}/lotes")]
+public IActionResult ObtenerLotesAsignados(int id_camion)
+{
+    List<Lote> lotes = _camioneroService.ObtenerLotesAsignados(id_camion);
+
+    return Ok(lotes);
+}
+
+[HttpPut]
+[Route("paquetes/{id_paquete}/entregado")]
+public IActionResult MarcarPaqueteEntregado(int id_paquete, [FromBody] bool entregado)
+{
+    bool actualizado = _camioneroService.MarcarPaqueteEntregado(id_paquete, entregado);
+
+    if (actualizado)
+    {
+        return Ok("Paquete marcado como entregado exitosamente.");
+    }
+    else
+    {
+        return BadRequest("Error al marcar el paquete como entregado.");
+    }
+}
+
+
